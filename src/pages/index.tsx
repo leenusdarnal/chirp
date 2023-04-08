@@ -8,14 +8,13 @@ import dayjs from "dayjs"
 import relativeTIme from "dayjs/plugin/relativeTime"
 import Image from "next/image"
 import { Loading } from "../components/Loading"
-import { retryDelay } from "@trpc/client/dist/internals/retryDelay"
 
 dayjs.extend(relativeTIme)
 
 const CreatePostWizard = () => {
   const { user } = useUser()
   if (!user) return null
-  console.log(user)
+
   return (
     <div className="flex w-full gap-3">
       <Image
@@ -52,7 +51,7 @@ const PostView = (props: PostWithUser) => {
             post.createdAt
           ).fromNow()}`}</span>
         </div>
-        <span>{post.content}</span>
+        <span className="text-2xl">{post.content}</span>
       </div>
     </div>
   )
