@@ -1,9 +1,6 @@
 export const Loading = ({ size = 16 }) => {
   return (
-    <div
-      role="status"
-      className=" absolute right-0 top-0 flex h-screen w-screen items-center justify-center"
-    >
+    <div role="status">
       <svg
         aria-hidden="true"
         className=" animate-spin fill-slate-300 text-slate-200 dark:text-slate-600"
@@ -23,6 +20,14 @@ export const Loading = ({ size = 16 }) => {
         />
       </svg>
       <span className="sr-only">Loading...</span>
+    </div>
+  )
+}
+
+export const LoadingPage = () => {
+  return (
+    <div className="absolute right-0 top-0 flex h-screen w-screen items-center justify-center">
+      <Loading size={60} />
     </div>
   )
 }

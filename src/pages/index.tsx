@@ -7,8 +7,9 @@ import { type RouterOutputs, api } from "~/utils/api"
 import dayjs from "dayjs"
 import relativeTIme from "dayjs/plugin/relativeTime"
 import Image from "next/image"
-import { Loading } from "../components/Loading"
+import { Loading, LoadingPage } from "../components/Loading"
 import { useState } from "react"
+import { toast } from "react-hot-toast"
 
 dayjs.extend(relativeTIme)
 
@@ -21,6 +22,14 @@ const CreatePostWizard = () => {
     onSuccess: () => {
       setInput("")
       void ctx.posts.getAll.invalidate()
+    },
+    onError: (e) => {
+      const errorMessage = e.data?.zodError?.fieldErrors.content
+      if (errorMessage && errorMessage[0]) {
+        toast.error(errorMessage[0])
+      } else {
+        toast.error("Failed to post! Please try again later")
+      }
     },
   })
 
@@ -40,15 +49,30 @@ const CreatePostWizard = () => {
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault()
+            if (input !== "") {
+              mutate({ content: input })
+            }
+          }
+        }}
         disabled={isPosting}
       />
-      <button
-        onClick={() => {
-          mutate({ content: input })
-        }}
-      >
-        Post
-      </button>
+      {input !== "" && !isPosting && (
+        <button
+          onClick={() => {
+            mutate({ content: input })
+          }}
+        >
+          Post
+        </button>
+      )}
+      {isPosting && (
+        <div className=" flex items-center justify-center">
+          <Loading size={20} />
+        </div>
+      )}
     </div>
   )
 }
@@ -81,7 +105,7 @@ const PostView = (props: PostWithUser) => {
 const Feed = () => {
   const { data, isLoading: postLoading } = api.posts.getAll.useQuery()
 
-  if (postLoading) return <Loading size={60} />
+  if (postLoading) return <LoadingPage />
 
   if (!data) return <div>Something went wrong</div>
 
