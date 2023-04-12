@@ -1,0 +1,25 @@
+name: CI
+on:
+  push:
+  branches:
+    - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  DATABASE_URL: "https://fakedburl.com"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: npm install
+      - name: TypeCheck
+        run: npm run build && npm run typecheck
+      - name: Lint
+        run: npm run lint
